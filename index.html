@@ -1,55 +1,61 @@
-<script src="/cdn-cgi/apps/head/HgwijWEz4Y6jk8ecRf3qjoI3AEg.js"></script><script src="//ssl.p.jwpcdn.com/player/v/8.0.12/jwplayer.js">
-                        </script>
-<script src="//futbollibre.online/futbolLibre.js">
-                        </script>
-<script>
-                            jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
-                        </script>
-<div id="player"></div>
-<script>
+<head>
+<script type="text/javascript" src="https://content.jwplatform.com/libraries/d8kYgPIS.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>MTV Player</title>
+<style type="text/css">
+<!--
+body {
+    background-color: #000000;
+    margin:0;
+}
+-->
+</style>
 
-                            var xhttp = new XMLHttpRequest();
-                            xhttp.open("GET", "https://m3u8.futbollibre.online/hls/telefe.php", true);
-                            xhttp.send();
-                            xhttp.onreadystatechange = function() {
-                                if (xhttp.readyState == 4 && xhttp.status == 200) {
-
-                                    var jsonResponse = JSON.parse(xhttp.responseText);
-                                    var m3u8 = jsonResponse['telefe'];
-
-                                   a = jwplayer("player");
-                                    a.setup({
-                                        file: m3u8,
-                                        aspectratio: "4:3",
-                                        withCredentials: true,
-                                        primary: "html5",
-                                        type: "hls",
-                                        width: "100%",
-                                        height: "100%",
-                                        cast: {},
-                                        autostart: !1
-                                    }), a.on("error", function() {
-                                        theTimeout = setTimeout(function() {
-                                            intentos += 1, console.log(intentos), intentos < 4 ? (xhttp = new XMLHttpRequest, randd = Math.floor(1e4 * Math.random() + 1), xhttp.open("GET", atob(jsonurlx) + "?" + randd, !0), xhttp.send(), xhttp.onreadystatechange = function() {
-                                                4 == xhttp.readyState && 200 == xhttp.status && (t = JSON.parse(xhttp.responseText), e = t.tnt, a.load({
-                                                    file: e
-                                                }), a.play())
-                                            }) : (a.setup({
-                                                file: m3u8,
-                                                aspectratio: "4:3",
-                                                withCredentials: true,
-                                                primary: "html5",
-                                                type: "hls",
-                                                width: "100%",
-                                                height: "100%",
-                                                cast: {},
-                                                autostart: !1
-                                            }), a.play())
-                                        }, 3e3)
-                                    }), a.on("play", function() {
-                                        clearTimeout(theTimeout)
-                                    })
-                                    
-                                }
-                            }
-                        </script>
+ 
+</head>
+ 
+<div id="Miami TV"></div>
+ 
+<div id='playerTwkTCyaHYzqV'></div>
+<script type='text/javascript'>
+jwplayer('playerTwkTCyaHYzqV').setup({
+image: 'http://miamitvchannel.com/images/proudsponsor.jpg',
+title: 'Miami TV',
+width: '100%',
+aspectratio: '16:9',
+autostart: 'true',
+primary: 'html5',
+fallback: 'false',
+ga: '{}',
+sharing: '{}',
+logo: {
+		file: 'http://miamitvchannel.com/player/content/posters/SUBSCRIBE.png',
+		link: 'http://miamitvchannel.com/subscribe',
+		position: ' bottom-left'
+},
+playlist: [{
+      file: 'http://disfruta.club:8000/live/tvpremiumhd355/ddlsikej556s/47.m3u8',
+    image: 'http://miamitvchannel.com/player/content/thumbnails/miamitvlogo.png',
+    title: 'Miami TV',
+},{
+file: 'http://disfruta.club:8000/live/tvpremiumhd355/ddlsikej556s/47.m3u8',
+    image: 'http://miamitvchannel.com/player/content/thumbnails/miamitvlogo.png',
+    title: 'Miami TV Spain',
+},{
+file: 'https://59ec5453559f0.streamlock.net/miamitv/smil:miamitvmexico/playlist.m3u8',
+    image: 'http://miamitvchannel.com/player/content/thumbnails/miamitvmexicologo.png',
+     title: 'Miami TV Mexico',
+},{
+file: 'https://59ec5453559f0.streamlock.net/canal18/smil:canal18/playlist.m3u8',
+ image: 'http://miamitvchannel.com/player/content/thumbnails/miamitvlogo.png',
+    title: 'Miami TV Channel 18',
+},{
+file: 'https://59ec5453559f0.streamlock.net/miamitv/smil:miamitv/playlist.m3u8',
+ image: 'http://miamitvchannel.com/player/content/thumbnails/miamitvlogo.png',
+    title: 'Miami TV',
+ }],
+repeat: 'true',
+});
+</script>
+  
+</html>
