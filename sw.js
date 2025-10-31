@@ -1,15 +1,19 @@
 const CACHE_NAME = 'modern-notebook-cache-v1';
 // This list should include all the static assets that make up the app shell.
 const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/index.tsx',
-  '/App.tsx',
-  '/components/NoteList.tsx',
-  '/components/NoteEditor.tsx',
-  '/components/Icons.tsx',
-  '/hooks/useLocalStorage.ts',
-  '/types.ts',
+  './',
+  './index.html',
+  './manifest.json',
+  './index.tsx',
+  './App.tsx',
+  './components/NoteList.tsx',
+  './components/NoteEditor.tsx',
+  './components/Icons.tsx',
+  './components/InstallPWA.tsx',
+  './hooks/useLocalStorage.ts',
+  './types.ts',
+  './icon-192.png',
+  './icon-512.png',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Roboto:wght@400;500;700&display=swap'
 ];
