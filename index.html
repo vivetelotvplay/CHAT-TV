@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
-  <h2>Generando QR para la factura...</h2>
+  <h2>En unos minutos volvera a facturacion...</h2>
   <div id="qrContainer" style="text-align:center; margin-top:20px;"></div>
 
   <script>
@@ -48,44 +49,9 @@
 
 
 
-  // Simulación: puedes reemplazar esto con datos reales si los recibes
-  const ventasDelDia = JSON.parse(localStorage.getItem("ventasDelDia") || "[]");
 
-  function agregarVenta(venta) {
-    ventasDelDia.push(venta);
-    localStorage.setItem("ventasDelDia", JSON.stringify(ventasDelDia));
-    renderVentas();
-  }
-
-  function renderVentas() {
-    const tabla = document.getElementById("registroVentas");
-    tabla.innerHTML = "";
-    ventasDelDia.forEach(v => {
-      tabla.innerHTML += `
-        <tr>
-          <td>${v.hora}</td>
-          <td>${v.cliente}</td>
-          <td>${v.productos}</td>
-          <td>${v.total}</td>
-        </tr>
-      `;
-    });
-  }
-
-  renderVentas();
-
-
-
- 
-  const ahora = new Date();
-  const horaActual = ahora.getHours();
-  const minutosActual = ahora.getMinutes();
-
-  // Si es entre 8:00 y 8:05 AM, reinicia el registro
-  if (horaActual === 8 && minutosActual < 5) {
-    localStorage.removeItem("ventasDelDia");
-  }
 </script>
 
 </body>
 </html>
+
