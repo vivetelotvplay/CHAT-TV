@@ -6,6 +6,13 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
+
+<!-- Monto total a cobrar -->
+<div id="montoTotal" style="text-align:center; margin-top:20px; font-size:18px; color:green; font-weight:bold;">
+  MONTO TOTAL A COBRAR: <span id="valorTotal">Cargando...</span>
+</div>
+
+
   <h2>Escanear para imprimir factura...</h2>
   <div id="qrContainer" style="text-align:center; margin-top:20px;"></div>
 
@@ -30,6 +37,14 @@
       }
       qrContainer.appendChild(canvas);
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+const total = urlParams.get("total");
+
+document.getElementById("valorTotal").innerText = total
+  ? `${parseFloat(total).toFixed(2)}`
+  : "No disponible";
+
   </script>
 
   <script>
@@ -99,5 +114,3 @@
 
 </body>
 </html>
-
-
