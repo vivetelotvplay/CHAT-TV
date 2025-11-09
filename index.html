@@ -23,7 +23,7 @@
       qrContainer.appendChild(canvas);
     });
   </script>
-<div style="height:192px;"></div> <!-- 2 pulgadas de espacio -->
+<div style="height:100px;"></div> <!-- 2 pulgadas de espacio -->
 
 <div style="margin-top:20px;">
   <h3>Registro de Ventas del Día</h3>
@@ -40,13 +40,14 @@
   </table>
 </div>
 
-  <script>
+  
   // Redirige a facturación después de 5 minutos (300,000 ms)
   setTimeout(() => {
     window.location.href = "http://localhost:4507/facturacion.html";
   }, 300000);
-</script>
-<script>
+
+
+
   // Simulación: puedes reemplazar esto con datos reales si los recibes
   const ventasDelDia = JSON.parse(localStorage.getItem("ventasDelDia") || "[]");
 
@@ -72,10 +73,10 @@
   }
 
   renderVentas();
-</script>
 
 
-  <script>
+
+ 
   const ahora = new Date();
   const horaActual = ahora.getHours();
   const minutosActual = ahora.getMinutes();
@@ -88,4 +89,3 @@
 
 </body>
 </html>
-
