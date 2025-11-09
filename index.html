@@ -23,5 +23,69 @@
       qrContainer.appendChild(canvas);
     });
   </script>
+<div style="height:192px;"></div> <!-- 2 pulgadas de espacio -->
+
+<div style="margin-top:20px;">
+  <h3>Registro de Ventas del Día</h3>
+  <table border="1" style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>Hora</th>
+        <th>Cliente</th>
+        <th>Productos</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="registroVentas"></tbody>
+  </table>
+</div>
+
+  <script>
+  // Redirige a facturación después de 5 minutos (300,000 ms)
+  setTimeout(() => {
+    window.location.href = "http://localhost:4507/facturacion.html";
+  }, 300000);
+</script>
+<script>
+  // Simulación: puedes reemplazar esto con datos reales si los recibes
+  const ventasDelDia = JSON.parse(localStorage.getItem("ventasDelDia") || "[]");
+
+  function agregarVenta(venta) {
+    ventasDelDia.push(venta);
+    localStorage.setItem("ventasDelDia", JSON.stringify(ventasDelDia));
+    renderVentas();
+  }
+
+  function renderVentas() {
+    const tabla = document.getElementById("registroVentas");
+    tabla.innerHTML = "";
+    ventasDelDia.forEach(v => {
+      tabla.innerHTML += `
+        <tr>
+          <td>${v.hora}</td>
+          <td>${v.cliente}</td>
+          <td>${v.productos}</td>
+          <td>${v.total}</td>
+        </tr>
+      `;
+    });
+  }
+
+  renderVentas();
+</script>
+
+
+  <script>
+  const ahora = new Date();
+  const horaActual = ahora.getHours();
+  const minutosActual = ahora.getMinutes();
+
+  // Si es entre 8:00 y 8:05 AM, reinicia el registro
+  if (horaActual === 8 && minutosActual < 5) {
+    localStorage.removeItem("ventasDelDia");
+  }
+</script>
+
 </body>
 </html>
+
