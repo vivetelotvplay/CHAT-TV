@@ -1,5 +1,0 @@
-{
-  "name": "Modern Notebook App",
-  "description": "A beautifully designed notepad application that mimics a physical notebook. Write, edit, and save your notes directly in your browser's local storage for a private and persistent experience.",
-  "requestFramePermissions": []
-}
