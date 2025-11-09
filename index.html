@@ -1,50 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="./icon-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern Notebook</title>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#fde68a">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Roboto', sans-serif;
-      }
-      .font-handwriting {
-        font-family: 'Kalam', cursive;
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^6.23.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
-  <body class="bg-slate-100 dark:bg-slate-900">
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').then(registration => {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-        });
+<body>
+  <h2>Generando QR para la factura...</h2>
+  <div id="qrContainer" style="text-align:center; margin-top:20px;"></div>
+
+  <script>
+    const params = window.location.search.slice(1); // todo lo que viene después de ?
+    const destinoFinal = `https://vivetelotvplay.github.io/prueba?${params}`;
+
+    const qrContainer = document.getElementById("qrContainer");
+    QRCode.toCanvas(destinoFinal, { width: 250 }, (err, canvas) => {
+      if (err) {
+        console.error("Error generando QR:", err);
+        qrContainer.innerText = "Error al generar el QR";
+        return;
       }
-    </script>
-  <script type="module" src="/index.tsx"></script>
+      qrContainer.appendChild(canvas);
+    });
+  </script>
 </body>
 </html>
