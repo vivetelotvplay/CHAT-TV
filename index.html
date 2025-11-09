@@ -6,8 +6,16 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
-  <h2>Generando QR para la factura...</h2>
+  <h2>Escanear para imprimir factura...</h2>
   <div id="qrContainer" style="text-align:center; margin-top:20px;"></div>
+
+  <!-- Botones modernos -->
+<div style="margin-top: 30px; text-align: center; display: flex; justify-content: center; gap: 20px;">
+  <button onclick="irAFacturacion()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">FACTURACIÓN</button>
+  <button onclick="imprimirEnPC()" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer;">IMPRIMIR EN PC</button>
+  <button onclick="mostrarCalculadora()" style="padding: 10px 20px; background: #FF9800; color: white; border: none; border-radius: 5px; cursor: pointer;">CALCULADORA</button>
+</div>
+
 
   <script>
     const params = window.location.search.slice(1); // todo lo que viene después de ?
@@ -25,11 +33,71 @@
   </script>
 
   <script>
-  // Redirige a facturación después de 5 minutos (300,000 ms)
+  const params = window.location.search.slice(1);
+  const destinoFinal = `https://vivetelotvplay.github.io/prueba?${params}`;
+
+  const qrContainer = document.getElementById("qrContainer");
+  QRCode.toCanvas(destinoFinal, { width: 250 }, (err, canvas) => {
+    if (err) {
+      console.error("Error generando QR:", err);
+      qrContainer.innerText = "Error al generar el QR";
+      return;
+    }
+    qrContainer.appendChild(canvas);
+  });
+
+ </script>
+
+
+  
+  <script>
+  function irAFacturacion() {
+    window.location.href = "http://localhost:4507/facturacion.html";
+  }
+
+  function imprimirEnPC() {
+    window.open(destinoFinal, "_blank");
+  }
+
+  function mostrarCalculadora() {
+    document.getElementById("calculadora").style.display = "block";
+  }
+
+  function calcularCambio() {
+    const pago = parseFloat(document.getElementById("pagoCon").value);
+    const urlParams = new URLSearchParams(window.location.search);
+    const total = parseFloat(urlParams.get("total")) || 0;
+
+    if (isNaN(pago)) {
+      alert("Ingrese un monto válido");
+      return;
+    }
+
+    const cambio = pago - total;
+    document.getElementById("resultadoCambio").innerText =
+      cambio >= 0
+        ? `Cambio: ${cambio.toFixed(2)}`
+        : `Falta: ${Math.abs(cambio).toFixed(2)}`;
+  }
+
+  // Redirección automática a facturación en 5 minutos
   setTimeout(() => {
     window.location.href = "http://localhost:4507/facturacion.html";
   }, 300000);
 </script>
 
+
+
+<!-- Calculadora moderna -->
+<div id="calculadora" style="margin-top: 40px; text-align: center; display: none;">
+  <h3>Calculadora de Pago</h3>
+  <label for="pagoCon">PAGO CON:</label>
+  <input type="number" id="pagoCon" placeholder="Ingrese monto" style="padding: 8px; margin-left: 10px;">
+  <button onclick="calcularCambio()" style="padding: 8px 15px; margin-left: 10px; background: #673AB7; color: white; border: none; border-radius: 5px;">CALCULAR</button>
+  <div id="resultadoCambio" style="margin-top: 15px; font-weight: bold;"></div>
+</div>
+
 </body>
 </html>
+
+
