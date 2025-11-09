@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Planilla de Ventas — Responsive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="min-h-screen flex items-start justify-center p-4 sm:p-6">
+    <main class="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6 sm:p-8">
+        <header class="mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-indigo-700">Planilla de Ventas</h1>
+            <p class="text-sm text-gray-600 mt-1">Interfaz adaptable para móviles, tablets y escritorio.</p>
+        </header>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <input id="code" placeholder="Código" class="p-2 border rounded w-full" />
+            <input id="desc" placeholder="Descripción" class="p-2 border rounded w-full" />
+            <input id="qty" type="number" min="1" value="1" placeholder="Cantidad" class="p-2 border rounded w-full" />
+            <input id="price" type="number" min="0" step="0.01" placeholder="Precio" class="p-2 border rounded w-full" />
+        </section>
+
+        <section class="flex gap-3 mb-4">
+            <button id="add" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded">Agregar</button>
+            <button id="clear" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">Limpiar</button>
+            <button id="export" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">Exportar JSON</button>
+        </section>
+
+        <!-- Responsive sheet: table on md+, card list on small screens -->
+        <section class="mb-4">
+            <div id="table-wrap" class="hidden md:block overflow-auto border rounded">
+                <table class="min-w-full text-left text-sm">
+                    <thead class="bg-gray-100 sticky top-0">
+                        <tr>
+                            <th class="px-3 py-2">Código</th>
+                            <th class="px-3 py-2">Descripción</th>
+                            <th class="px-3 py-2">Cantidad</th>
+                            <th class="px-3 py-2">Precio</th>
+                            <th class="px-3 py-2">Subtotal</th>
+                            <th class="px-3 py-2">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                    <tfoot>
+                        <tr class="bg-gray-50">
+                            <td colspan="4" class="text-right px-3 py-2 font-semibold">Total:</td>
+                            <td id="total-table" class="px-3 py-2 font-semibold">0.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div id="list-wrap" class="md:hidden space-y-3">
+                <!-- cards for small screens -->
+            </div>
+        </section>
+
+        <footer class="text-xs text-gray-500 text-right">
+            Vista adaptable: tarjetas en móviles, tabla en pantallas grandes.
+        </footer>
+    </main>
+
+    <script>
+        const codeEl = document.getElementById('code');
+        const descEl = document.getElementById('desc');
+        const qtyEl = document.getElementById('qty');
+        const priceEl = document.getElementById('price');
+        const addBtn = document.getElementById('add');
+        const clearBtn = document.getElementById('clear');
+        const exportBtn = document.getElementById('export');
+
+        const tableBody = document.getElementById('table-body');
+        const totalTable = document.getElementById('total-table');
+        const listWrap = document.getElementById('list-wrap');
+        const tableWrap = document.getElementById('table-wrap');
+
+        let sheet = [];
+
+        function formatMoney(v) {
+            return Number(v || 0).toFixed(2);
+        }
+
+        function render() {
+            // table (for md+)
+            tableBody.innerHTML = '';
+            let total = 0;
+            sheet.forEach((r, i) => {
+                const subtotal = r.cantidad * r.precio;
+                total += subtotal;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-3 py-2 border-b">${escapeHtml(r.codigo)}</td>
+                    <td class="px-3 py-2 border-b">${escapeHtml(r.descripcion)}</td>
+                    <td class="px-3 py-2 border-b">${r.cantidad}</td>
+                    <td class="px-3 py-2 border-b">${formatMoney(r.precio)}</td>
+                    <td class="px-3 py-2 border-b">${formatMoney(subtotal)}</td>
+                    <td class="px-3 py-2 border-b"><button data-idx="${i}" class="remove text-red-600">Eliminar</button></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+            totalTable.textContent = formatMoney(total);
+
+            // list (for small screens)
+            listWrap.innerHTML = '';
+            if (sheet.length === 0) {
+                listWrap.innerHTML = '<div class="text-center text-gray-500 py-4">No hay filas en la planilla.</div>';
+            } else {
+                sheet.forEach((r, i) => {
+                    const subtotal = r.cantidad * r.precio;
+                    const card = document.createElement('div');
+                    card.className = 'bg-white border rounded p-3 shadow-sm flex justify-between items-start gap-3';
+                    card.innerHTML = `
+                        <div class="flex-1">
+                            <div class="font-semibold">${escapeHtml(r.descripcion || r.codigo)}</div>
+                            <div class="text-xs text-gray-500 mt-1">Código: ${escapeHtml(r.codigo)}</div>
+                            <div class="text-xs text-gray-500 mt-1">Cantidad: ${r.cantidad} × Precio: ${formatMoney(r.precio)}</div>
+                        </div>
+                        <div class="text-right flex flex-col items-end gap-2">
+                            <div class="font-semibold">${formatMoney(subtotal)}</div>
+                            <button data-idx="${i}" class="remove-sm text-red-600 text-sm">Eliminar</button>
+                        </div>
+                    `;
+                    listWrap.appendChild(card);
+                });
+
+                const totalCard = document.createElement('div');
+                totalCard.className = 'text-right text-sm text-gray-700';
+                totalCard.innerHTML = `<div class="font-semibold">Total: ${formatMoney(total)}</div>`;
+                listWrap.appendChild(totalCard);
+            }
+
+            // attach handlers
+            document.querySelectorAll('.remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = Number(e.currentTarget.dataset.idx);
+                    sheet.splice(idx, 1);
+                    render();
+                });
+            });
+            document.querySelectorAll('.remove-sm').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = Number(e.currentTarget.dataset.idx);
+                    sheet.splice(idx, 1);
+                    render();
+                });
+            });
+
+            // show appropriate wrapper (table for md+, list for sm)
+            // CSS handles visibility; keep wrappers in sync
+        }
+
+        function escapeHtml(str) {
+            if (!str && str !== 0) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // ... código anterior en ventas.html
+
+        addBtn.addEventListener('click', () => {
+            const codigo = codeEl.value.trim();
+            const cantidad = Math.max(1, Number(qtyEl.value) || 1);
+            
+            // OMITIMOS obtener descripcion y precio de los inputs, ya que vendrán del servidor (inventario)
+            // Solo necesitamos el código y la cantidad para la transacción.
+
+            if (!codigo) {
+                alert('Ingrese un código válido.');
+                return;
+            }
+            
+            // Llama al servidor para DEBITAR y OBTENER el item
+            fetch('/debitar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ codigo, cantidad }),
+            })
+            .then(response => {
+                // Manejar errores de servidor (400, 404, etc.)
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.mensaje || 'Error desconocido del servidor.'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // El servidor ha confirmado el débito y nos devuelve los datos de la venta.
+                const venta = data.item;
+                
+                // REFLEJA LA VENTA EN LA PLANILLA LOCAL usando los datos del servidor
+                sheet.push({ 
+                    codigo: venta.codigo, 
+                    descripcion: venta.descripcion, 
+                    cantidad: venta.cantidad, 
+                    precio: venta.precio 
+                });
+                render();
+                
+                // reset inputs
+                qtyEl.value = '1';
+                priceEl.value = '';
+                descEl.value = '';
+                codeEl.value = '';
+                codeEl.focus();
+            })
+            .catch(error => {
+                // Mostrar alerta de error de débito (ej. producto no encontrado o stock insuficiente)
+                alert('No se pudo registrar la venta: ' + error.message);
+                console.error('Error en la venta:', error);
+            });
+        });
+
+// ... código posterior
+        exportBtn.addEventListener('click', () => {
+            if (sheet.length === 0) { alert('La planilla está vacía.'); return; }
+            const payload = { date: new Date().toISOString(), items: sheet, total: sheet.reduce((s,r)=>s+r.cantidad*r.precio,0) };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ventas_planilla.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+
+        // initial render
+        render();
+    </script>
+</body>
+</html>
