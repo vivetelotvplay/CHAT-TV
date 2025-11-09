@@ -6,7 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
-  <h2>En unos minutos volvera a facturacion...</h2>
+  <h2>Generando QR para la factura...</h2>
   <div id="qrContainer" style="text-align:center; margin-top:20px;"></div>
 
   <script>
@@ -23,32 +23,12 @@
       qrContainer.appendChild(canvas);
     });
   </script>
-<div style="height:100px;"></div> <!-- 2 pulgadas de espacio -->
 
-<div style="margin-top:20px;">
-  <h3>Registro de Ventas del Día</h3>
-  <table border="1" style="width:100%; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th>Hora</th>
-        <th>Cliente</th>
-        <th>Productos</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="registroVentas"></tbody>
-  </table>
-</div>
-
-  
+  <script>
   // Redirige a facturación después de 5 minutos (300,000 ms)
   setTimeout(() => {
     window.location.href = "http://localhost:4507/facturacion.html";
   }, 300000);
-
-
-
-
 </script>
 
 </body>
