@@ -2,113 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <title>Tarjeta de Presentación + Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - ProNetwork</title>
     <link rel="stylesheet" href="/style.css" />
     <style>
-        /* Fijar la página y adaptar a cualquier pantalla */
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(180deg, #061226 0%, #0a1929 50%, #071a2a 100%);
         }
-        
-        main {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            box-sizing: border-box;
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
         }
-        
-        .tarjeta {
-            max-width: 100%;
-            height: auto;
-            min-height: calc(100vh - 80px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        /* PIN display encima del botón */
-        .pin-info {
-            text-align: center;
-            margin-top: 15px;
-            padding: 12px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.04);
-        }
-        
-        .pin-info .pin-label {
-            font-size: 12px;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
-        
-        .pin-info .pin-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent-purple);
-            letter-spacing: 2px;
-        }
-        
-        /* Espaciado adicional para el botón */
-        .btn-open-chat {
-            margin-top: 12px !important;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .tarjeta {
-                min-height: calc(100vh - 60px);
-            }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-4px);
         }
     </style>
 </head>
 <body>
-    <!-- Header simplificado: solo status -->
+    <button class="back-btn" onclick="window.location.href='/feed.html'">← Volver al Feed</button>
+
     <header class="topbar">
         <div id="status" class="status">No conectado</div>
     </header>
 
     <main class="tarjeta vertical-card">
-        <!-- Foto -->
         <div class="foto">
             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face" alt="Foto del trabajador" />
         </div>
 
-        <!-- Información -->
         <div class="info">
             <div>
-                <h1 class="nombre" id="nombre">Juan Pérez</h1>
-                <h2 class="oficio" id="oficio">Carpintero</h2>
-                <p class="experiencia">10 años de experiencia</p>
-                <p class="ubicacion">📍 Santo Domingo</p>
-                <p class="contacto">📞 <span id="phone">809-555-1234</span></p>
-                <p class="email">✉️ <span id="email">ejemplo@correo.com</span></p>
+                <h1 class="nombre" id="nombre">Cargando...</h1>
+                <h2 class="oficio" id="oficio">-</h2>
+                <p class="experiencia">-</p>
+                <p class="ubicacion">📍 -</p>
+                <p class="contacto">📞 <span id="phone">-</span></p>
+                <p class="email">✉️ <span id="email">-</span></p>
                 
-                <!-- PIN del usuario encima del botón -->
                 <div class="pin-info">
                     <div class="pin-label">Tu PIN personal</div>
                     <div class="pin-value" id="myPin">00000000</div>
                 </div>
                 
-                <!-- Botón Abrir Chat -->
                 <button id="openChatBtn" class="btn-open-chat">Abrir chat</button>
             </div>
         </div>
     </main>
 
-    <!-- Modal de conexión (estilo overlay) -->
+    <!-- Modales del chat (igual que index.html) -->
     <div id="connectOverlay" class="chat-overlay" aria-hidden="true">
         <div class="chat-card">
             <div class="chat-header">
@@ -134,13 +89,12 @@
         </div>
     </div>
 
-    <!-- Chat overlay (oculto por defecto) -->
     <div id="chatOverlay" class="chat-overlay" aria-hidden="true">
         <div class="chat-card">
             <div class="chat-header">
                 <div class="chat-profile">
-                    <div class="chat-name" id="chatName">Juan Pérez</div>
-                    <div class="chat-sub" id="chatSub">809-555-1234 · Carpintero</div>
+                    <div class="chat-name" id="chatName">Usuario</div>
+                    <div class="chat-sub" id="chatSub">-</div>
                 </div>
                 <div class="chat-status">
                     <span id="led" class="led red" title="Estado: desconectado"></span>
@@ -159,10 +113,7 @@
         </div>
     </div>
 
+    <script src="/profile.js"></script>
     <script src="/app.js"></script>
-    <script>
-        // Nombre/Perfil que aparecerá por defecto en la tarjeta
-        window.CLIENT_NAME = "Juan Pérez";
-    </script>
 </body>
 </html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Feed - Red Social Profesional</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        body {
+            background: linear-gradient(180deg, #061226 0%, #0a1929 50%, #071a2a 100%);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header con navegación */
+        .main-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(6,18,38,0.98), rgba(7,26,42,0.95));
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .header-logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7c3aed, #2b6cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-new-post {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #7c3aed, #2b6cff);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-new-post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-profile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-purple);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-profile:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Container principal */
+        .feed-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Filtros */
+        .feed-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.02);
+            color: var(--muted);
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-chip:hover,
+        .filter-chip.active {
+            background: linear-gradient(135deg, #7c3aed, #2b6cff);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Tarjetas del feed */
+        .feed-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .feed-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--accent-purple);
+            flex-shrink: 0;
+        }
+
+        .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-user-info {
+            flex: 1;
+        }
+
+        .card-username {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .card-profession {
+            color: var(--accent-purple);
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-type-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-worker {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-post {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        /* Contenido de la tarjeta */
+        .card-content {
+            margin-bottom: 16px;
+        }
+
+        .card-image {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .card-image img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-text {
+            color: #e6eef8;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 16px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Modal de nuevo post */
+        .post-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2,6,23,0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .post-modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .post-modal-content {
+            background: linear-gradient(180deg, #071226, #091830);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .post-modal.active .post-modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+            color: inherit;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            background: rgba(255,255,255,0.04);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .image-upload-area {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.01);
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--accent-purple);
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .image-upload-area.has-image {
+            padding: 0;
+            border: none;
+        }
+
+        .upload-preview {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .btn-submit-post {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #7c3aed, #2b6cff);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-submit-post:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-submit-post:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--accent-purple);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .feed-container {
+                padding: 12px;
+            }
+
+            .feed-card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .header-logo {
+                font-size: 20px;
+            }
+
+            .btn-new-post {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-logo">ProNetwork</div>
+        <div class="header-actions">
+            <button class="btn-new-post" id="btnNewPost">
+                ✨ Nuevo Post
+            </button>
+            <div class="btn-profile" id="btnProfile">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop" alt="Perfil" id="headerProfileImg" />
+            </div>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="feed-container">
+        <!-- Filtros -->
+        <div class="feed-filters">
+            <div class="filter-chip active" data-filter="all">🌐 Todo</div>
+            <div class="filter-chip" data-filter="workers">👷 Profesionales</div>
+            <div class="filter-chip" data-filter="posts">📸 Posts</div>
+            <div class="filter-chip" data-filter="recent">🆕 Recientes</div>
+        </div>
+
+        <!-- Feed de tarjetas -->
+        <div id="feedContent">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>Cargando contenido...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de nuevo post -->
+    <div class="post-modal" id="postModal">
+        <div class="post-modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Crear nuevo post</div>
+                <button class="modal-close" id="closePostModal">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="newPostForm">
+                    <div class="form-group">
+                        <label for="postText">¿Qué quieres compartir?</label>
+                        <textarea id="postText" placeholder="Describe tu trabajo, logro o experiencia..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto del trabajo</label>
+                        <input type="file" id="postImage" accept="image/*" style="display: none;" />
+                        <div class="image-upload-area" id="uploadArea">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Click para subir una foto</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit-post" id="submitPost">
+                        Publicar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/index-protected.js"></script>
+    <script src="/feed.js"></script>
+</body>
+</html>

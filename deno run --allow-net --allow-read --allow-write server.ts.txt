@@ -1,0 +1,2 @@
+C:\Users\grego\OneDrive\FACTURACION> deno run --allow-net --allow-read --allow-write --unstable server.ts
+
